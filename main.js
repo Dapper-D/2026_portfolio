@@ -315,7 +315,12 @@
      Phones and reduced motion get a normal stacked page instead (CSS).
      ========================================================= */
   const flow = $("[data-flow]");
-  const pinMQ = matchMedia("(min-width: 981px) and (prefers-reduced-motion: no-preference)");
+  const pinMQ = matchMedia("(prefers-reduced-motion: no-preference)");
+  // Smooth scrolling only with a mouse/trackpad on wide screens; touch keeps native momentum
+  const lenisMQ = matchMedia("(min-width: 981px) and (pointer: fine)");
+  // Stable screen height. Phone address bars change innerHeight while scrolling,
+  // so the timeline only re-measures when the width changes (e.g. rotation).
+  let vh = innerHeight, lastW = innerWidth;
   const clamp01 = (v) => Math.max(0, Math.min(1, v));
   const ramp = (g, a, b) => clamp01((g - a) / (b - a));
 
@@ -366,18 +371,21 @@
 
   function layout() {
     pinned = pinMQ.matches;
+    vh = innerHeight; lastW = innerWidth;
+    document.documentElement.style.setProperty("--stage-h", vh + "px");
     document.documentElement.classList.toggle("is-pinned", pinned);
-    flow.style.height = pinned ? (total + 1) * innerHeight + "px" : "";
+    flow.style.height = pinned ? (total + 1) * vh + "px" : "";
     if (!pinned) layers.forEach((l) => { l.el.classList.remove("is-off"); l.el.style.removeProperty("--v"); });
-    if (pinned && !lenis && window.Lenis) lenis = new window.Lenis({ autoRaf: true, lerp: 0.09 });
-    if (!pinned && lenis) { lenis.destroy(); lenis = null; }
+    const wantLenis = pinned && lenisMQ.matches;
+    if (wantLenis && !lenis && window.Lenis) lenis = new window.Lenis({ autoRaf: true, lerp: 0.09 });
+    if (!wantLenis && lenis) { lenis.destroy(); lenis = null; }
     drawAll();
     update();
   }
 
   function update() {
     if (!pinned) { heroVisible = true; nav.classList.toggle("is-scrolled", scrollY > innerHeight * 0.6); return; }
-    const g = (scrollY - flow.offsetTop) / innerHeight;
+    const g = (scrollY - flow.offsetTop) / vh;
     for (const l of layers) {
       const vin = l.inA == null ? 1 : ramp(g, l.s + l.inA, l.s + l.inB);
       const vout = l.outA == null ? 1 : 1 - ramp(g, l.s + l.outA, l.s + l.outB);
@@ -424,9 +432,9 @@
       el.scrollIntoView({ behavior: reduced ? "auto" : "smooth" });
       return true;
     }
-    const y = flow.offsetTop + jumps[id] * innerHeight;
-    if (lenis) lenis.scrollTo(y, { duration: Math.min(2.4, 0.8 + Math.abs(y - scrollY) / innerHeight / 12) });
-    else scrollTo(0, y);
+    const y = flow.offsetTop + jumps[id] * vh;
+    if (lenis) lenis.scrollTo(y, { duration: Math.min(2.4, 0.8 + Math.abs(y - scrollY) / vh / 12) });
+    else scrollTo({ top: y, behavior: reduced ? "auto" : "smooth" });
     return true;
   }
   document.addEventListener("click", (e) => {
@@ -438,7 +446,12 @@
 
   addEventListener("scroll", update, { passive: true });
   let rt;
-  addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(layout, 150); });
+  addEventListener("resize", () => {
+    // Ignore height-only changes from a phone's address bar sliding in and out
+    if (pinned && innerWidth === lastW && Math.abs(innerHeight - vh) < vh * 0.25) return;
+    clearTimeout(rt); rt = setTimeout(layout, 150);
+  });
+  lenisMQ.addEventListener("change", layout);
   pinMQ.addEventListener("change", layout);
 
   // running timecode like a camera viewfinder

@@ -48,8 +48,8 @@ vercel --prod
 
 ## Scroll timeline
 
-On screens 981px and wider, the page is one sticky stage, and scroll position drives a timeline measured in screens. Each section is registered in `main.js` with `seg(name, length, layers)`. Change those numbers to make a section longer, shorter or faster. To debug, `window.__flow` in the console lists where each section starts.
+On every screen size, the page is one sticky stage, and scroll position drives a timeline measured in screens. Phones get their own layouts (see the "pinned mode on phones" block in `styles.css`). Each section is registered in `main.js` with `seg(name, length, layers)`. Change those numbers to make a section longer, shorter or faster. To debug, `window.__flow` in the console lists where each section starts.
 
 ## Accessibility
 
-The site supports keyboard navigation with a skip link and visible focus rings. With `prefers-reduced-motion` turned on, the page drops the pinned timeline and smooth scrolling, the rain stops and the loader finishes at once. Body text is light grey on near-black and passes WCAG AA contrast.
+The site supports keyboard navigation with a skip link and visible focus rings. With `prefers-reduced-motion` turned on, the page drops the pinned timeline and smooth scrolling and shows a normal stacked layout, the rain stops and the loader finishes at once. Body text is light grey on near-black and passes WCAG AA contrast.

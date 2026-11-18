@@ -1,5 +1,22 @@
 # Changelog
 
+## 1.3.0 (2026-11-18)
+
+Phones now get the scroll sequence too.
+
+### Changed
+- The pinned timeline runs on every screen size. Only people with "reduce motion" turned on get the stacked page.
+- Phone layouts (980px and narrower) are sized to fit one screen:
+  - Project intros show the headline, description, stack, buttons and name tag, without the tilted screen. The same screens appear in the viewfinder straight after.
+  - Viewfinder frames are 84% of the screen width, with a shorter ruler.
+  - Skills is a 2×2 grid. Log, Archive and the B3spoken card are tighter.
+- The timeline uses a measured screen height (`--stage-h`) and ignores height-only resizes, so a phone's address bar sliding in and out doesn't make the page jump. It re-measures when the width changes, for example on rotation.
+- Lenis smooth scrolling runs only with a mouse or trackpad on screens 981px and wider. Touch keeps native momentum scrolling.
+
+### Unchanged
+- Desktop layouts and timings.
+
+
 ## 1.2.0 (2026-11-18)
 
 The whole page now runs as one pinned stage, like anantagame.com, and the transitions start on the first scroll.

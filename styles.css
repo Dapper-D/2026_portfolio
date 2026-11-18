@@ -267,7 +267,7 @@ body.is-loading .hero__name { clip-path: inset(0 50% 0 50%); }
    main.js sets --v (0..1) per layer, --iv per staggered item,
    --pan on viewfinders, and .is-off / .is-on / .is-in classes.
    ========================================================= */
-.is-pinned .stage { position: sticky; top: 0; height: 100vh; overflow: hidden; background: #000; }
+.is-pinned .stage { position: sticky; top: 0; height: var(--stage-h, 100vh); overflow: hidden; background: #000; }
 .is-pinned .stage > .L { position: absolute; inset: 0; margin: 0; opacity: var(--v, 0); transform: translateY(calc((1 - var(--v, 0)) * var(--dir, 1) * 2.5rem)); will-change: opacity, transform; }
 .is-pinned .stage > .L.is-off { visibility: hidden; }
 .is-pinned .stage > .L:not(.is-on) { pointer-events: none; }
@@ -318,6 +318,75 @@ body.is-loading .hero__name { clip-path: inset(0 50% 0 50%); }
 .is-pinned .district[data-item] { transform: translateX(calc((1 - var(--iv, 0)) * 4rem)); }
 .is-pinned .log__list [data-item], .is-pinned .archive__strip [data-item] { transform: translateY(calc((1 - var(--iv, 0)) * .8rem)) scale(calc(.96 + var(--iv, 0) * .04)); }
 .is-pinned .stage > .footer { min-height: 0; }
+
+
+/* ---------- pinned mode on phones and small tablets ---------- */
+@media (max-width: 980px) {
+  .is-pinned { --bar: 3.25rem; }
+
+  /* hero */
+  .is-pinned .hero__inner { padding-bottom: 4.5rem; }
+  .is-pinned .hero__intro { font-size: .95rem; margin: 1rem auto 1.25rem; }
+
+  /* projects title card */
+  .is-pinned .stage > .roster { justify-content: center; }
+  .is-pinned .roster__head { padding: 0 var(--pad) 1.25rem; }
+  .is-pinned .roster .display { font-size: clamp(3.75rem, 19vw, 7rem); }
+  .is-pinned .chip { width: 8.5rem; height: 6rem; font-size: 1.3rem; }
+
+  /* project intro: copy at the top, name tag at the bottom, no tilted screen
+     (the same screens appear straight after in the viewfinder) */
+  .is-pinned .panel .panel__frame { display: block; }
+  .is-pinned .panel .panel__screen { display: none; }
+  .is-pinned .panel .panel__frame::after { background: linear-gradient(180deg, #07080be6 0%, #07080bb3 55%, #07080b40 100%); }
+  .is-pinned .panel .panel__copy { padding: 1.5rem var(--pad) 0; max-width: none; }
+  .is-pinned .panel__headline { font-size: clamp(1.6rem, 7vw, 2.2rem); margin-bottom: .75rem; }
+  .is-pinned .panel__body { font-size: .92rem; line-height: 1.5; margin-bottom: 1rem; }
+  .is-pinned .stack { margin-bottom: 1rem; gap: .3rem; }
+  .is-pinned .stack li { font-size: .72rem; padding: .15rem .5rem; }
+  .is-pinned .panel .btn { min-height: 2.5rem; padding: .45rem 1rem; font-size: .875rem; }
+  .is-pinned .panel .btn--cta { font-size: 1.15rem; }
+  .is-pinned .nametag { right: var(--pad); bottom: 1.25rem; }
+  .is-pinned .nametag__name { font-size: clamp(2.75rem, 14vw, 5rem); }
+
+  /* viewfinder */
+  .is-pinned .vf__name { display: none; }
+  .is-pinned .vf__meta { top: .9rem; }
+  .is-pinned .vf__strip { --fw: 84vw; --gap: 6vw; top: 3rem; bottom: 4.25rem; }
+  .is-pinned .vf__frame { gap: .9rem; justify-content: flex-start; padding-top: 1rem; }
+  .is-pinned .screen--flat { aspect-ratio: 16 / 11; }
+  .is-pinned .vf__cap h4 { font-size: 1.15rem; }
+  .is-pinned .vf__cap p { font-size: .875rem; line-height: 1.45; }
+  .is-pinned .vf__scale { height: 3.25rem; }
+  .is-pinned .vf__track i { flex-basis: 1.8rem; }
+  .is-pinned .vf__track { transform: translateX(calc(var(--pan, 0) * -9rem)); }
+
+  /* closing card */
+  .is-pinned .seq__cardbox { padding: 1.25rem; }
+  .is-pinned .seq__cardtitle { font-size: 1.35rem; margin-bottom: 1rem; }
+  .is-pinned .seq__cols { gap: .6rem; margin-bottom: 1rem; }
+  .is-pinned .seq__col { padding: .75rem .9rem; }
+  .is-pinned .seq__col h4 { font-size: 1.5rem; }
+  .is-pinned .seq__col ul { font-size: .85rem; }
+
+  /* skills, log, archive */
+  .is-pinned .stage > .districts, .is-pinned .stage > .log, .is-pinned .stage > .archive { padding: 4.5rem var(--pad) 1.5rem; justify-content: flex-start; }
+  .is-pinned .display { font-size: clamp(3rem, 15vw, 5rem); }
+  .is-pinned .districts__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .5rem; margin-top: 1.25rem; flex: 1; max-height: 34rem; }
+  .is-pinned .district { min-height: 0; padding: .85rem; }
+  .is-pinned .district h3 { font-size: 1.9rem; }
+  .is-pinned .district ul { font-size: .8rem; line-height: 1.45; }
+  .is-pinned .log__list { margin-top: 1.25rem; }
+  .is-pinned .log__list li { grid-template-columns: 1fr auto; gap: .1rem .75rem; padding: .7rem 0; }
+  .is-pinned .log__date { grid-column: 1 / -1; font-size: .8rem; }
+  .is-pinned .log__title { font-size: .95rem; }
+  .is-pinned .archive__strip { grid-template-columns: 1fr; margin-top: 1rem; }
+  .is-pinned .archive__strip a { padding: .75rem .9rem; }
+
+  /* footer */
+  .is-pinned .footer__inner { padding-bottom: 1.5rem; }
+  .is-pinned .footer .pills { margin: 1.25rem 0 2rem; }
+}
 
 /* ---------- skills ---------- */
 .districts, .log, .archive { padding: 7rem var(--pad) 0; }
