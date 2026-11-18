@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dapo Omoworare | Security engineer and builder</title>
+  <meta name="description" content="Portfolio of Dapo Omoworare: vulnerability automation, threat detection, mobile forensics and full-stack AI tools.">
+  <meta property="og:title" content="Dapo Omoworare | Security engineer and builder">
+  <meta property="og:description" content="Vulnerability automation, threat detection, mobile forensics and full-stack AI tools.">
+  <meta property="og:image" content="/assets/vuln-banner.jpg">
+  <meta name="theme-color" content="#07080B">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%2307080B'/%3E%3Crect x='7' y='6' width='4' height='20' fill='%231EA4FF'/%3E%3Ctext x='13' y='25' font-family='Arial Black' font-size='19' fill='%23ECEDEF'%3ED%3C/text%3E%3C/svg%3E">
+  <link rel="preload" href="fonts/BebasNeue-Regular.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fonts/Barlow-Regular.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="vendor/lenis.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="is-loading">
+  <a class="skip" href="#projects">Skip to projects</a>
+
+  <div class="loader" aria-hidden="true">
+    <span class="loader__pct">0%</span>
+  </div>
+
+  <header class="nav">
+    <a class="nav__mark" href="#top" aria-label="Home"><span class="bar"></span><span data-bind="short"></span></a>
+    <nav aria-label="Sections">
+      <ul class="nav__links">
+        <li><a href="#top">Home</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="#log">Log</a></li>
+        <li><a href="#archive">Archive</a></li>
+      </ul>
+    </nav>
+    <a class="nav__icon" data-gh target="_blank" rel="noopener" aria-label="GitHub profile"></a>
+    <a class="btn btn--cta btn--sm" href="#contact">Get in touch</a>
+  </header>
+
+  <main class="flow" data-flow>
+    <div class="stage" data-stage>
+      <section id="top" class="L hero" data-seg="hero" aria-labelledby="hero-name">
+        <canvas class="art" data-art="#1ea4ff" data-seed="7" data-rain="1" aria-hidden="true"></canvas>
+        <div class="hero__shade"></div>
+        <div class="hero__inner">
+          <p class="hero__kicker"><span data-bind="role"></span>, <span data-bind="location"></span></p>
+          <h1 id="hero-name" class="hero__name" data-bind="name"></h1>
+          <p class="hero__intro" data-bind="intro"></p>
+          <div class="pills" data-links></div>
+        </div>
+        <span class="cue" aria-hidden="true">Scroll</span>
+      </section>
+
+      <section id="projects" class="L roster" data-seg="roster" aria-labelledby="roster-title">
+        <div class="roster__head">
+          <h2 id="roster-title" class="display">Projects</h2>
+          <p class="muted">Pick one, or keep scrolling.</p>
+        </div>
+        <div class="roster__select" role="list" data-roster></div>
+      </section>
+
+      <div data-panels></div>
+
+      <section id="skills" class="L districts" data-seg="skills" aria-labelledby="skills-title">
+        <h2 id="skills-title" class="display">Skills</h2>
+        <div class="districts__grid" data-skills></div>
+      </section>
+
+      <section id="log" class="L log" data-seg="log" aria-labelledby="log-title">
+        <h2 id="log-title" class="display">Log</h2>
+        <ol class="log__list" data-log></ol>
+      </section>
+
+      <section id="archive" class="L archive" data-seg="archive" aria-labelledby="archive-title">
+        <h2 id="archive-title" class="display">Archive</h2>
+        <p class="muted">Older and smaller things.</p>
+        <ul class="archive__strip" data-archive></ul>
+      </section>
+
+      <footer id="contact" class="L footer" data-seg="contact">
+        <canvas class="art" data-art="#1ea4ff" data-seed="21" aria-hidden="true"></canvas>
+        <div class="footer__inner">
+          <a class="footer__big" data-mail>Work with me</a>
+          <p class="muted">Open to security roles, contracts and interesting builds. <span data-mail-text></span></p>
+          <div class="pills" data-links></div>
+          <p class="footer__legal">© <span data-year></span> <span data-bind="name"></span>. Built by hand, hosted on Vercel.</p>
+        </div>
+      </footer>
+    </div>
+  </main>
+
+  <script src="vendor/lenis.min.js"></script>
+  <script src="data.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>
