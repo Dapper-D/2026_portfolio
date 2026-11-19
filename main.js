@@ -1,5 +1,6 @@
 (() => {
   const S = window.SITE;
+  if ("scrollRestoration" in history) history.scrollRestoration = "manual";
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
   const esc = (t) => String(t).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -445,7 +446,8 @@
     const a = e.target.closest('a[href^="#"], [data-go]');
     if (!a) return;
     const id = a.dataset.go || a.getAttribute("href").slice(1);
-    if (id && jumpTo(id)) { e.preventDefault(); history.replaceState(null, "", "#" + id); }
+    // No hash in the address bar: it made the page reopen mid-way on refresh
+    if (id && jumpTo(id)) e.preventDefault();
   });
 
   /* ---------- phone menu: full-screen overlay to jump between sections ---------- */
@@ -509,7 +511,6 @@
     closeMenu(false);
     // land straight on the section instead of fast-scrolling through every transition
     jumpTo(id, true);
-    history.replaceState(null, "", "#" + id);
     menuBtn.focus({ preventScroll: true });
   });
   document.addEventListener("keydown", (e) => {
@@ -555,7 +556,15 @@
     .then(() => {
       layout();
       ready = true;
-      if (location.hash) setTimeout(() => jumpTo(location.hash.slice(1)), 50);
+      // Start at the top on refresh, back/forward or a restored tab. Only a fresh
+      // visit to a shared link like /#skills jumps to that section.
+      const navType = (performance.getEntriesByType("navigation")[0] || {}).type;
+      const freshVisit = navType === "navigate" || navType === undefined;
+      if (location.hash && freshVisit) setTimeout(() => jumpTo(location.hash.slice(1), true), 50);
+      else {
+        if (location.hash) history.replaceState(null, "", location.pathname + location.search);
+        scrollTo({ top: 0, behavior: "instant" });
+      }
     });
   (function tick(t) {
     const p = Math.min(ready ? 100 : 90, Math.round(((t - start) / Math.max(minTime, 1)) * 100));

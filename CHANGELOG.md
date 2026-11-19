@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.4.1 (2026-11-18)
+
+### Fixed
+- **Phones opened partway down the page, e.g. at Under50.** Tapping a project, tab or menu link wrote it into the address bar (`/#p-under50`), so a refresh or reopened tab jumped back there. Phones also restored the old scroll position.
+  - In-page links no longer change the address bar.
+  - Refresh, back/forward and restored tabs always start at the top, and any leftover `#…` is removed.
+  - A shared link like `/#skills` still opens at that section on a fresh visit.
+  - `history.scrollRestoration` is set to `manual`, so the browser doesn't restore an old position first.
+
+### Unchanged
+- Tabs on screens 981px and wider, the hamburger menu at 980px and below.
+
+
 ## 1.4.0 (2026-11-18)
 
 Phone menu for jumping between sections.
