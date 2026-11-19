@@ -421,20 +421,24 @@
       curSeg = cur.name;
       navLinks.forEach((a) => a.setAttribute("aria-current", a.getAttribute("href") === "#" + navFor(cur.name)));
       chips.forEach((b) => b.setAttribute("aria-current", b.dataset.go === cur.name));
+      setMenuCurrent(cur.name);
     }
     nav.classList.toggle("is-scrolled", g > 0.5);
   }
 
-  function jumpTo(id) {
+  function jumpTo(id, instant = false) {
     const el = document.getElementById(id);
     if (!el) return false;
+    // "instant", not "auto": "auto" defers to the CSS scroll-behavior (smooth),
+    // which would fast-scroll through every transition in between
+    const behavior = instant || reduced ? "instant" : "smooth";
     if (!pinned || jumps[id] == null) {
-      el.scrollIntoView({ behavior: reduced ? "auto" : "smooth" });
+      el.scrollIntoView({ behavior });
       return true;
     }
     const y = flow.offsetTop + jumps[id] * vh;
-    if (lenis) lenis.scrollTo(y, { duration: Math.min(2.4, 0.8 + Math.abs(y - scrollY) / vh / 12) });
-    else scrollTo({ top: y, behavior: reduced ? "auto" : "smooth" });
+    if (lenis) lenis.scrollTo(y, instant ? { immediate: true } : { duration: Math.min(2.4, 0.8 + Math.abs(y - scrollY) / vh / 12) });
+    else scrollTo({ top: y, behavior });
     return true;
   }
   document.addEventListener("click", (e) => {
@@ -443,6 +447,84 @@
     const id = a.dataset.go || a.getAttribute("href").slice(1);
     if (id && jumpTo(id)) { e.preventDefault(); history.replaceState(null, "", "#" + id); }
   });
+
+  /* ---------- phone menu: full-screen overlay to jump between sections ---------- */
+  const menu = $("#menu");
+  const menuBtn = $("[data-menu-toggle]");
+  const menuLabel = $("[data-menu-label]");
+  const MENU = [
+    { id: "top", label: "Home", seg: "hero" },
+    { id: "projects", label: "Projects", seg: "roster", children: S.projects.map((p) => ({ id: "p-" + p.id, label: p.name, seg: "p-" + p.id })) },
+    { id: "skills", label: "Skills", seg: "skills" },
+    { id: "log", label: "Log", seg: "log" },
+    { id: "archive", label: "Archive", seg: "archive" },
+    { id: "contact", label: "Contact", seg: "contact" }
+  ];
+  $("[data-menu-list]").innerHTML = MENU.map((m) => `<li>
+      <a class="menu__item" href="#${m.id}" data-menu-go="${m.id}" data-seg-of="${m.seg}">${esc(m.label)}</a>
+      ${m.children ? `<ul class="menu__sub">${m.children.map((c) => `<li><a href="#${c.id}" data-menu-go="${c.id}" data-seg-of="${c.seg}">${esc(c.label)}</a></li>`).join("")}</ul>` : ""}
+    </li>`).join("");
+  const menuLinks = $$("[data-menu-go]", menu);
+  let menuOpen = false;
+
+  function setMenuCurrent(segName) {
+    menuLinks.forEach((a) => {
+      const own = a.dataset.segOf === segName;
+      const parent = a.dataset.segOf === "roster" && segName.startsWith("p-");
+      a.toggleAttribute("aria-current", own || parent);
+      if (own || parent) a.setAttribute("aria-current", own ? "location" : "true");
+    });
+  }
+  function openMenu() {
+    menuOpen = true;
+    menu.hidden = false;
+    requestAnimationFrame(() => menu.classList.add("is-open"));
+    document.documentElement.classList.add("menu-open");
+    menuBtn.setAttribute("aria-expanded", "true");
+    menuLabel.textContent = "Close";
+    (menuLinks.find((a) => a.getAttribute("aria-current") === "location") || menuLinks[0]).focus();
+  }
+  function closeMenu(returnFocus = true) {
+    if (!menuOpen) return;
+    menuOpen = false;
+    menu.classList.remove("is-open");
+    document.documentElement.classList.remove("menu-open");
+    menuBtn.setAttribute("aria-expanded", "false");
+    menuLabel.textContent = "Menu";
+    const hide = () => { if (!menuOpen) menu.hidden = true; };
+    if (reduced) hide(); else setTimeout(hide, 320);
+    if (returnFocus) menuBtn.focus();
+  }
+  menuBtn.addEventListener("click", () => (menuOpen ? closeMenu() : openMenu()));
+  menu.addEventListener("click", (e) => {
+    const a = e.target.closest("[data-menu-go]");
+    if (!a) {
+      // GitHub / Email buttons just close the menu behind them
+      if (e.target.closest("a")) closeMenu(false);
+      return;
+    }
+    e.preventDefault();
+    e.stopPropagation();
+    const id = a.dataset.menuGo;
+    closeMenu(false);
+    // land straight on the section instead of fast-scrolling through every transition
+    jumpTo(id, true);
+    history.replaceState(null, "", "#" + id);
+    menuBtn.focus({ preventScroll: true });
+  });
+  document.addEventListener("keydown", (e) => {
+    if (!menuOpen) return;
+    if (e.key === "Escape") { e.preventDefault(); closeMenu(); return; }
+    if (e.key === "Tab") {
+      // keep keyboard focus inside the menu and its toggle button while open
+      const items = [menuBtn, ...$$("a, button", menu)];
+      const i = items.indexOf(document.activeElement);
+      if (e.shiftKey && i <= 0) { e.preventDefault(); items[items.length - 1].focus(); }
+      else if (!e.shiftKey && i === items.length - 1) { e.preventDefault(); items[0].focus(); }
+    }
+  });
+  // the menu is phone-only: close it if the screen grows past the phone breakpoint
+  matchMedia("(min-width: 981px)").addEventListener("change", (e) => e.matches && closeMenu(false));
 
   addEventListener("scroll", update, { passive: true });
   let rt;

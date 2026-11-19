@@ -1,5 +1,20 @@
 # Changelog
 
+## 1.4.0 (2026-11-18)
+
+Phone menu for jumping between sections.
+
+### Added
+- **Menu button** in the top bar on screens 980px and narrower. It replaces "Get in touch", which is now in the menu. Desktop is unchanged.
+- **Full-screen menu** that slides down with Home, Projects (all seven projects listed underneath), Skills, Log, Archive and Contact, plus GitHub and Email buttons. The section you're on is marked with the blue bar.
+- Tapping a link closes the menu and lands you on that section instantly, instead of scrolling through every transition in between.
+- The button turns into **Close**, and Escape also closes the menu. The page underneath can't scroll while it's open. Keyboard focus stays inside the menu and goes back to the button when it closes.
+- With reduced motion on, the menu opens without the slide or the staggered items.
+
+### Fixed
+- Jumps that were meant to be instant used `behavior: "auto"`, which follows the CSS `scroll-behavior: smooth`. They now use `"instant"`.
+
+
 ## 1.3.0 (2026-11-18)
 
 Phones now get the scroll sequence too.

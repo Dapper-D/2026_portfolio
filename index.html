@@ -34,8 +34,19 @@
       </ul>
     </nav>
     <a class="nav__icon" data-gh target="_blank" rel="noopener" aria-label="GitHub profile"></a>
-    <a class="btn btn--cta btn--sm" href="#contact">Get in touch</a>
+    <a class="btn btn--cta btn--sm nav__cta" href="#contact">Get in touch</a>
+    <button class="nav__menu" type="button" aria-expanded="false" aria-controls="menu" data-menu-toggle>
+      <span class="nav__burger" aria-hidden="true"><i></i><i></i></span>
+      <span data-menu-label>Menu</span>
+    </button>
   </header>
+
+  <div id="menu" class="menu" role="dialog" aria-modal="true" aria-label="Site menu" hidden>
+    <nav class="menu__inner" aria-label="Jump to a section">
+      <ul class="menu__list" data-menu-list></ul>
+      <div class="pills menu__links" data-links></div>
+    </nav>
+  </div>
 
   <main class="flow" data-flow>
     <div class="stage" data-stage>
